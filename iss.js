@@ -9,20 +9,20 @@ const request = require('request');
  *   - An error, if any (nullable)
  *   - The IP address as a string (null if error). Example: "162.245.144.188"
  */
-// const fetchMyIP = function(callback) {
-//   request('https://api.ipify.org?format=json', (error, response, body) => {
-//     if (error) return callback(error, null);
 
-//     if (response.statusCode !== 200) {
-//       callback(Error(`Status Code ${response.statusCode} when fetching IP: ${body}`), null);
-//       return;
-//     }
+const fetchMyIP = function(callback) {
+  request('https://api.ipify.org?format=json', (error, response, body) => {
+    if (error) return callback(error, null);
 
-//     const ip = JSON.parse(body).ip;
-//     callback(null, ip);
-//   });
-// };
+    if (response.statusCode !== 200) {
+      callback(Error(`Status Code ${response.statusCode} when fetching IP: ${body}`), null);
+      return;
+    }
 
+    const ip = JSON.parse(body).ip;
+    callback(null, ip);
+  });
+};
 // module.exports = { fetchMyIP };
 
 // iss.js
@@ -100,7 +100,22 @@ const request = require('request');
  *     [ { risetime: <number>, duration: <number> }, ... ]
  */ 
 const nextISSTimesForMyLocation = function(callback) {
-  // empty for now
+  
+  // ip = fetchMyIP
+  const ip = fetchMyIP((error, ip) => {
+    if (error) {
+      console.log("It didn't work!" , error);
+      return;
+    }
+  
+    console.log('It worked! Returned IP:' , ip);
+  });
+  
+
+  // geocoords{long, lat} = fetchCoordsByIP(ip)
+  // nextISSTimesForMyLocation = nextISSTimesForMyLocation(geocoords)
 }
 
+module.exports = { fetchMyIP };
 module.exports = { nextISSTimesForMyLocation };
+
