@@ -36,23 +36,23 @@ const fetchMyIP = function(callback) {
  *   - The lat and lng as an object (null if error). Example:
  *     { latitude: '49.27670', longitude: '-123.13000' }
  */
-// const fetchCoordsByIP = function(ip, callback) {
-//   request(`https://ipvigilante.com/json/${ip}`, (error, response, body) => {
-//     if (error) {
-//       callback(error, null);
-//       return;
-//     }
+const fetchCoordsByIP = function(ip, callback) {
+  request(`https://ipvigilante.com/json/${ip}`, (error, response, body) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
 
-//     if (response.statusCode !== 200) {
-//       callback(Error(`Status Code ${response.statusCode} when fetching Coordinates for IP: ${body}`), null);
-//       return;
-//     }
+    if (response.statusCode !== 200) {
+      callback(Error(`Status Code ${response.statusCode} when fetching Coordinates for IP: ${body}`), null);
+      return;
+    }
 
-//     const { latitude, longitude } = JSON.parse(body).data;
+    const { latitude, longitude } = JSON.parse(body).data;
 
-//     callback(null, { latitude, longitude });
-//   });
-// };
+    callback(null, { latitude, longitude });
+  });
+};
 
 // // Don't need to export the other function since we are not testing it right now.
 // module.exports = { fetchCoordsByIP };
@@ -102,20 +102,26 @@ const fetchMyIP = function(callback) {
 const nextISSTimesForMyLocation = function(callback) {
   
   // ip = fetchMyIP
-  const ip = fetchMyIP((error, ip) => {
+  fetchMyIP((error, ip) => {
     if (error) {
       console.log("It didn't work!" , error);
       return;
     }
-  
-    console.log('It worked! Returned IP:' , ip);
+    console.log('Returned IP:' , ip);
+      fetchCoordsByIP(ip, (error, coords) => {
+        if (error) {
+          console.log("It didn't work!" , error);
+          return;
+        }
+        console.log('Returned geo coords: ', coords);
   });
   
 
   // geocoords{long, lat} = fetchCoordsByIP(ip)
   // nextISSTimesForMyLocation = nextISSTimesForMyLocation(geocoords)
+  });
 }
 
+module.exports = { fetchCoordsByIP };
 module.exports = { fetchMyIP };
 module.exports = { nextISSTimesForMyLocation };
-
